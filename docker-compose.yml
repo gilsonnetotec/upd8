@@ -1,0 +1,35 @@
+version: '3'
+services:
+  laravel-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel-app
+    env_file:
+      - .env
+  web:
+    image: php:8.1.2-apache
+    container_name: laravel-web 
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8080:80"
+    networks:
+      - laravel-network
+  db:
+    image: mysql:8.0
+    container_name: laravel-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: laravel_db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: 12345678
+    volumes:
+      - laravel-db-data:/var/lib/mysql
+    networks:
+      - laravel-network
+networks:
+  laravel-network:
+    driver: bridge
+volumes:
+  laravel-db-data:
